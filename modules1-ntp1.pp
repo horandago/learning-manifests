@@ -28,3 +28,5 @@ class ntp {
     subscribe => File['ntp.conf'],
   }
 }
+
+include ntp
