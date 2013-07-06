@@ -7,11 +7,11 @@ package{'ntp':
 
 case $operatingsystem {
   centos, redhat: {
-    $ntp_source = "/tmp/rhel-ntp.conf"
+    $ntp_source = "/root/learning-manifests/ntp.conf.el"
     $ntp_service = "ntpd"
   }
   debian, ubuntu: {
-    $ntp_source = "/tmp/deb-ntp.conf"
+    $ntp_source = "/root/learning-manifests/ntp.conf.debian"
     $ntp_service = "ntp"
   }
   default: { fail("Unrecognized operating system for ntp configuration") }
