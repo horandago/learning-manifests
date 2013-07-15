@@ -1,6 +1,34 @@
-# /root/examples/modules1-ntp1.pp
+# = Class: ntp
+#
+# This class installs/configures/manages NTP. It can disable NTP on VMs.
+# RH and Debian are the only supported OSes.
+# 
+# == Parameters:
+#
+# $servers:: An array of NTP servers, with/without +iburst+ and
+#            +dynamic+ statements
+# $enable:: Whether to start NTP service on boot or not. Defaults to true.
+#           Valid vaules: true and false.
+# $ensure:: Whether to run the NTP service. Defaults to running. Valid values
+#           running and stopped
+#
+# == Requires:
+#
+# Nothing.
+#
+# == Sample Usage:
+#
+# class {'ntp':
+#   servers => ["ntp1.example.com dynamic",
+#               "ntp2.example.com dynamic",],
+# }
+# class {'ntp':
+#   enable => false,
+#   ensure => stopped,
+#}
 
-class ntp {
+
+class ntp ($servers = undef, $enable = true, $ensure = running) { 
   case $operatingsystem {
     centos, redhat: {
       $service_name = 'ntpd'
@@ -20,7 +48,16 @@ class ntp {
     }
   }
 
+# We paramaterize the instantiation of the class. If we
+# invoke the class with 'class {'ntp': servers => ["ntp1.foo", "ntp2.foo",], }
+# it will override the default users within the ntp.conf file.
+
+if $servers == undef {  
   $servers_real = $default_servers
+}
+else {
+  $servers_real = $servers
+}
   
   package { 'ntp':
     ensure => installed,
